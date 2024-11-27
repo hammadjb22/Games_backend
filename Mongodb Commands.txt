@@ -1,0 +1,36 @@
+atlas password :R5LTukMKK0JJ5TDz
+
+mongosh intialize mongo shell
+
+mongod start mongodb server
+
+show databases 
+
+use <databaseName> if it exist it switch to it if not then create new and switch to it
+
+db.<collectionName>.find({})it returns array
+
+db.<collectionName>.findOne({})it returns object
+
+db.<collectionName>.insertOne() it insert one entry
+
+db.<collectionName>.insert([])it insert list of entries
+
+db.<collectionName>.find({rating:{$gt:4.5}})
+
+db.<collectionName>.find({$and:[{rating:{$gt:4.5}},{id:{$gt:1}}]})
+
+db.<collectionName>.find({$or:[{rating:{$gt:4.5}},{id:{$gt:1}}]}).sort({price:1}).limit(2)
+
+db.<collectionName>.countDocument({rating:{$gt:4.5}}) return count of data objects that matches
+
+db.<collectionName>.find({rating:{$gt:4.5}},{title:1,_id:0}) here 2 param , one for projection means which 
+columns you want if you put 0 it left that param and 1 to get it if empty bring all coulmns
+
+db.<collectionName>.updateOne({id:1},{$set:{price:999}},{upsert:true}) updateif it exist if not insert new record
+
+db.<collectionName>.replace({id:1},{price:999}) replace the old entry and puts the provided second param in place 
+
+db.<collectionName>.deleteOne({id:1}) delete the element with the condition
+
+db.<collectionName>.deleteMany({price:{$gt:900}}) delete the element with the condition
