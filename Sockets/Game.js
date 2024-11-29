@@ -11,6 +11,9 @@ function setupSocket(server) {
 
 const queues = {};
 
+
+
+
   const io = new Server(server, {
     cors: {
       origin: "*", // Adjust this in production to restrict origins
@@ -20,11 +23,10 @@ const queues = {};
 
   // WebSocket Setup for Real-Time Game Connections
   io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+    // console.log('A user connected:', socket.id);
     
     socket.on('playGame', (data) => {
-      console.log(data);
-
+      // console.log(data)
       try {
         const queueKey = `${data.game}:${data.amount}:${data.type}`;
         // console.log(queueKey)
@@ -45,12 +47,21 @@ const queues = {};
             queues[queueKey] = queue;
             console.log('creating room and addig both player')
             // Create a room and notify both players
-            const room = `${data.game}-${data.amount}-${data.type}-${Date.now()}`;
+            const room = `${socket.id}-${opponentId}-${data.type}-${Date.now()}`;
             socket.join(room);
             io.sockets.sockets.get(opponentId)?.join(room);
 
-            io.to(room).emit('gameStart', { roomId: room, gameType:data.game, tier:data.amount, mode:data.type });
+            io.to(room).emit('matchMake', { roomId: room,turn:opponentId, gameType:data.game, tier:data.amount, mode:data.type });
+            io.to(room).emit('gameStart', {state:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', roomId: room,turn:opponentId, gameType:data.game, tier:data.amount, mode:data.type });
             console.log(`Game started in room: ${room} for ${data.game} (Tier: ${data.amount})`);
+
+            // Real-time state updates
+            socket.on('updateChessState', (state) => {
+              console.log(state)
+              // Broadcast the updated chess state to the opponent
+              socket.to(room).emit('chessStateUpdate', state);
+            });
+
           }
         } else if (data.type ===2 ) {
           // Handle tournament mode (2-player or 4-player)
@@ -73,7 +84,7 @@ const queues = {};
             playersToMatch.forEach((playerId) => {
               io.sockets.sockets.get(playerId)?.join(room);
             });
-
+            io.to(room).emit('matchMake', { roomId: room, gameType, tier, mode, players: playersToMatch });
             io.to(room).emit('gameStart', { roomId: room, gameType, tier, mode, players: playersToMatch });
             console.log(`Tournament started in room: ${room} for ${data.game} (Tier: ${data.amount})`);
           }
@@ -85,17 +96,23 @@ const queues = {};
     });
 
     // Handle user disconnection
-    socket.on('disconnect', async () => {
+    socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
-
-      // Remove the user from any pending queue
-      try {
-        const keys = await redisClient.keys('queue:*');
-        for (const key of keys) {
-          await redisClient.lrem(key, 1, socket.id);
+    
+      // Remove the user from any pending queue in the `queues` object
+      for (const queueKey in queues) {
+        const queue = queues[queueKey];
+        const index = queue.indexOf(socket.id);
+        if (index !== -1) {
+          queue.splice(index, 1); // Remove the player from the queue
+          console.log(`User ${socket.id} removed from queue: ${queueKey}`);
         }
-      } catch (error) {
-        console.error('Error removing disconnected user from queue:', error);
+    
+        // Clean up empty queues
+        if (queues[queueKey].length === 0) {
+          delete queues[queueKey];
+          console.log(`Queue ${queueKey} deleted as it's empty.`);
+        }
       }
     });
   });
