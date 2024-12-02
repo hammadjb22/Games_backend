@@ -10,3 +10,5 @@ router.post('/login',authController.login)
 router.post('/forgotPassword',forgotPasswordLimiter, authController.forgotPassword);
 router.post('/verifyOtp', authController.verifyOTP);
 router.post('/resetPassword', authController.resetPassword);
+// email verification
+router.post('/send-email-verification-otp', authController.sendEmailVerificationOTP);

@@ -50,14 +50,17 @@ const queues = {};
             const room = `${socket.id}-${opponentId}-${data.type}-${Date.now()}`;
             socket.join(room);
             io.sockets.sockets.get(opponentId)?.join(room);
+             // Assign colors to the players
+            socket.emit('assignColorAndLead', {color:'black',lead:'black'}); // Assign black to the current player
+            io.to(opponentId).emit('assignColorAndLead', {color:'white',lead:'black'}); // Assign white to the opponent
 
-            io.to(room).emit('matchMake', { roomId: room,turn:opponentId, gameType:data.game, tier:data.amount, mode:data.type });
-            io.to(room).emit('gameStart', {state:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', roomId: room,turn:opponentId, gameType:data.game, tier:data.amount, mode:data.type });
-            console.log(`Game started in room: ${room} for ${data.game} (Tier: ${data.amount})`);
+            io.to(room).emit('matchMake', { roomId: room, gameType:data.game, tier:data.amount, mode:data.type });
+            io.to(room).emit('gameStart', { chessState:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1',roomId: room, gameType:data.game, tier:data.amount, mode:data.type });
+            // console.log(`Game started in room: ${room} for ${data.game} (Tier: ${data.amount})`);
 
             // Real-time state updates
             socket.on('updateChessState', (state) => {
-              console.log(state)
+              console.log("chess state update in room by :"+socket.id)
               // Broadcast the updated chess state to the opponent
               socket.to(room).emit('chessStateUpdate', state);
             });

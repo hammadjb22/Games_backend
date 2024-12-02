@@ -55,6 +55,14 @@ const userSchema = new Schema(
         message: 'Passwords must match',
       },
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isLoggedIn: {
+      type: Boolean,
+      default: false, // Initially, the user is not logged in
+    },
     token: String,
     otp: {
       type: String,
