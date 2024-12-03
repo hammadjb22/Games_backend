@@ -241,7 +241,7 @@ exports.login = async (req, res) => {
     user.token = token;
     user.loginAttempts = 0;
     user.lockUntil = undefined;
-    user.isLoggedIn = true;
+    // user.isLoggedIn = true;
     await user.save();
 
     return res.status(200).json({ success: true, token, user });
