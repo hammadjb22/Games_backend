@@ -30,7 +30,7 @@ setupSocket(server);
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect(process.env.MONGOOSE_CON);
+  await mongoose.connect(process.env.CON_STR);
   console.log('db connected..')
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
