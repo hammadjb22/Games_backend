@@ -66,22 +66,22 @@ function setupSocket(server) {
               playerBlack: {
                 userInfo: socket.userInfo
               },
-              startingPlayer: "black",
+              startingPlayer: "white",
               gameInfo:opponentSocket.gameInfo
             });
 
             // console.log(`Game started in room: ${room} for ${data.game} (Tier: ${data.amount})`);
            
             // Real-time state updates
-            socket.on('makeMove', ({matchId,state}) => {
-              console.log("chess state update in room by :" + socket.id)
+            socket.on('makeMove', ({matchId,state,userData}) => {
+              console.log("chess state update in room by :" +userData.name )
               // Broadcast the updated chess state to the opponent
-              socket.to(matchId).emit('updateMove', state);
+              socket.to(room).emit('updateMove', state);
             });
-            opponentSocket.on('makeMove', ({matchId,state}) => {
-              console.log("chess state update in room by :" + socket.id)
+            opponentSocket.on('makeMove', ({matchId,state,userData}) => {
+              console.log("chess state update in room by opponent :" + userData.name)
               // Broadcast the updated chess state to the opponent
-              socket.to(matchId).emit('updateMove', state);
+              socket.to(room).emit('updateMove', state);
             });
             
 

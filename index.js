@@ -84,8 +84,8 @@ app.get('/params/:name/:subject',(req,res)=>{
 })
 
 
-
-const PORT = process.env.PORT || 3000;
+console.log(process.env.PORT)
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
