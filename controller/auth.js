@@ -143,9 +143,9 @@ exports.createUser = async (req, res) => {
 
     // Generate a uniqueId
     user.uniqueId = uuidv4(); // Generates a unique UUID
-
+    // user.profileImage="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
     // Hash the password
-    const hash = bcrypt.hashSync(req.body.password, 5);
+    const hash = bcrypt.hashSync(req.body.password, 5);50
     user.password = hash;
     user.confirmPassword = hash;
 
@@ -241,7 +241,7 @@ exports.login = async (req, res) => {
     user.token = token;
     user.loginAttempts = 0;
     user.lockUntil = undefined;
-    // user.isLoggedIn = true;
+    user.isLoggedIn = true;
     await user.save();
 
     return res.status(200).json({ success: true, token, user });

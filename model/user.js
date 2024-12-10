@@ -14,6 +14,17 @@ const validatePassword = (password) => {
 // Define schema
 const userSchema = new Schema(
   {
+    profileImage: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          // Regex for URL validation
+          const urlRegex = /^(https?:\/\/)[^\s$.?#].[^\s]*$/;
+          return urlRegex.test(value);
+        },
+        message: 'Please enter a valid URL for the profile image',
+      },
+    },
     name: {
       type: String,
       required: [true, 'Name is required'],
