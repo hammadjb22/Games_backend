@@ -250,3 +250,22 @@ exports.login = async (req, res) => {
     return res.status(500).json({ success: false, message:error });
   }
 };
+
+exports.logout=async(req,res)=>{
+  try{
+    console.log("logout")
+  const {email}=req.body
+  const user= await User.findOne({email})
+  if(user){
+    user.isLoggedIn=false
+    await user.save()
+    return res.status(200).json({ success: true, message:'user logged out success' });
+  }
+
+
+}
+catch (error) {
+  console.log(error)
+  return res.status(500).json({ success: false, message:error });
+}
+}

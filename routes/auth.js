@@ -6,6 +6,8 @@ const { forgotPasswordLimiter } = require('../utils/fogotPasswordLimiter');
 
 router.post('/register',authController.createUser)
 router.post('/login',authController.login)
+router.post('/logout',authController.logout)
+
 // Forgot Password Routes
 router.post('/forgotPassword',forgotPasswordLimiter, authController.forgotPassword);
 router.post('/verifyOtp', authController.verifyOTP);
