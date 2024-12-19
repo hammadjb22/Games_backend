@@ -74,8 +74,9 @@ exports.forgotPassword = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp, type } = req.body; // Extract `type` from request body
+    console.log(req.body)
     const user = await User.findOne({ email });
-
+    console.log(user)
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
@@ -108,7 +109,7 @@ exports.verifyOTP = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { email, password, confirmPassword } = req.body;
-
+console.log(email,password)
     if (password !== confirmPassword) {
       return res.status(400).json({ success: false, message: 'Passwords do not match.' });
     }
@@ -123,7 +124,8 @@ exports.resetPassword = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'Password reset successfully.' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error processing request.' });
+    res.status(500).json({ success: false, message: err });
+    console.log(err)
   }
 };
 
@@ -159,7 +161,6 @@ exports.createUser = async (req, res) => {
 
     // Save the user to the database
     await user.save();
-
     // Send OTP to the user's email
     await sendEmail(user.email, 'Email Verification OTP', `Your OTP is ${otp}`);
 

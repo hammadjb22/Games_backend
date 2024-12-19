@@ -59,12 +59,6 @@ const userSchema = new Schema(
     confirmPassword: {
       type: String,
       required: [true, 'Confirm password is required'],
-      validate: {
-        validator: function (value) {
-          return value === this.password;
-        },
-        message: 'Passwords must match',
-      },
     },
     isEmailVerified: {
       type: Boolean,

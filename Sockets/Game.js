@@ -81,6 +81,7 @@ function setupSocket(server) {
             opponentSocket.on('makeMove', ({matchId,state,userData}) => {
               console.log("chess state update in room by opponent :" + userData.name)
               // Broadcast the updated chess state to the opponent
+              console.log(userData)
               opponentSocket.to(room).emit('updateMove', state);
             });
             
